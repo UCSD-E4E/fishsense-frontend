@@ -5,7 +5,7 @@ import accountService from '../services/account-service';
 
 class SignOutPage extends Component {
     render(): React.ReactNode {
-        accountService.logout();
+        accountService.signout();
 
         return <Navigate to="/" replace={true} />
     }
