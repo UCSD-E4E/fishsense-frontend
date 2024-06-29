@@ -9,7 +9,7 @@ interface GoogleJwtPayload extends JwtPayload {
     picture: string;
 }
 
-class LoginService {
+class AccountService {
     clientId: string;
 
     public get credential(): CredentialResponse|null {
@@ -61,14 +61,14 @@ class LoginService {
     }
 }
 
-export const loginService = new LoginService()
+export const accountService = new AccountService()
 
-export function loggedIn<T extends { new (...args: any[]): any; }>(component: T): T {
+export function authRequired<T extends { new (...args: any[]): any; }>(component: T): T {
     if (Object.hasOwn(component.prototype, "render")) {
         const renderFunction = component.prototype.render;
 
         component.prototype.render = function() {
-            if (!loginService.isLoggedIn) {
+            if (!accountService.isLoggedIn) {
                 return <Navigate to="/signin" replace={true} />
             }
 
@@ -79,4 +79,4 @@ export function loggedIn<T extends { new (...args: any[]): any; }>(component: T)
     return component;
 }
 
-export default loginService;
+export default accountService;

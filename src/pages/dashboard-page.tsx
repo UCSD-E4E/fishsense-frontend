@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 
-import { loggedIn } from '../services/login-service';
+import { authRequired } from '../services/account-service';
 
-@loggedIn
+@authRequired
 class DashboardPage extends Component {
     render(): React.ReactNode {
         return <p>Dashboard Page</p>

@@ -2,22 +2,22 @@ import React from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 
-import loginService from '../services/login-service';
+import accountService from '../services/account-service';
 
 function SignInPage() {
   const navigate = useNavigate();
 
-  if (loginService.isLoggedIn) {
+  if (accountService.isLoggedIn) {
     return <Navigate to="/" />
   }
 
   return (
     <div>
       <h1>Login to FishSense</h1>
-      <GoogleOAuthProvider clientId={loginService.clientId}>
+      <GoogleOAuthProvider clientId={accountService.clientId}>
         <GoogleLogin
           onSuccess={credentialResponse => {
-            loginService.login(credentialResponse);
+            accountService.login(credentialResponse);
             navigate("/")
           }}
           onError={() => {

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import { Hamburger, NavDrawer, NavDrawerBody, NavDrawerHeader, NavItem, NavSectionHeader } from '@fluentui/react-nav-preview';
 import { Avatar, Tooltip } from '@fluentui/react-components';
 import { Board20Filled, Board20Regular, SignOut20Filled, SignOut20Regular, bundleIcon } from '@fluentui/react-icons';
-import loginService from '../services/login-service';
+import accountService from '../services/account-service';
 
 const Dashboard = bundleIcon(Board20Filled, Board20Regular);
 const SignOut = bundleIcon(SignOut20Filled, SignOut20Regular);
@@ -28,7 +28,7 @@ class MainNav extends Component<{}, MainNavState> {
     }
 
     render(): React.ReactNode {
-        if (!loginService.isLoggedIn) {
+        if (!accountService.isLoggedIn) {
             return <div></div>;
         }
 
@@ -46,9 +46,9 @@ class MainNav extends Component<{}, MainNavState> {
                         <NavSectionHeader>Account</NavSectionHeader>
                         <NavItem href="/account" value="2">
                             <Avatar size={20} image={{
-                                src: loginService.jwt?.picture
+                                src: accountService.jwt?.picture
                             }} /> 
-                            {loginService.jwt?.name}
+                            {accountService.jwt?.name}
                         </NavItem>
                         <NavItem href="/signout" icon={<SignOut />} value="3">Sign Out</NavItem>
                     </NavDrawerBody>

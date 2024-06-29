@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
 import { Navigate } from 'react-router-dom';
 
-import loginService from '../services/login-service';
+import accountService from '../services/account-service';
 
 class SignOutPage extends Component {
     render(): React.ReactNode {
-        loginService.logout();
+        accountService.logout();
 
         return <Navigate to="/" replace={true} />
     }
