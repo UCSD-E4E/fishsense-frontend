@@ -4,6 +4,7 @@ import { FluentProvider, useThemeClassName, webLightTheme } from '@fluentui/reac
 
 import './App.scss';
 import router from './router';
+import MainNav from './components/main-nav-component';
 
 function ApplyToBody() {
   const classes = useThemeClassName();
@@ -22,8 +23,9 @@ function App() {
   return (
     <FluentProvider theme={webLightTheme}>
       <ApplyToBody />
-      
-      <div className='app-container'>
+      <MainNav />
+
+      <div className="app-container">
         <RouterProvider router={router} />
       </div>
     </FluentProvider>);

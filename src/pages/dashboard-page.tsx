@@ -3,10 +3,10 @@ import React, { Component } from 'react';
 import { loggedIn } from '../services/login-service';
 
 @loggedIn
-class HomePage extends Component {
+class DashboardPage extends Component {
     render(): React.ReactNode {
-        return <div>Home Page</div>
+        return <p>Dashboard Page</p>
     }
 }
 
-export default HomePage;
+export default DashboardPage;

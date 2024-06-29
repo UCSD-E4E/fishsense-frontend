@@ -1,6 +1,13 @@
 import { CredentialResponse, googleLogout } from "@react-oauth/google";
-import { jwtDecode } from 'jwt-decode';
+import { JwtPayload, jwtDecode } from 'jwt-decode';
 import { Navigate } from 'react-router-dom';
+
+interface GoogleJwtPayload extends JwtPayload {
+    given_name: string;
+    family_name: string;
+    name: string;
+    picture: string;
+}
 
 class LoginService {
     clientId: string;
@@ -15,18 +22,23 @@ class LoginService {
         return null;
     }
 
-    public get isLoggedIn(): boolean {
+    public get jwt(): GoogleJwtPayload|null {
         const credential = this.credential;
 
-        if (!credential || !credential?.credential) { // We haven't logged in yet.
-            return false;
+        if (!credential?.credential) { // We haven't logged in yet.
+            return null;
         }
 
         const jwt = jwtDecode(credential.credential);
-        const expiration = jwt.exp || 0;
-        const now = Date.now() / 1000;
+        console.log(jwt);
+        
+        return jwt as GoogleJwtPayload;
+    }
 
-        if (expiration <= now) { // Expired
+    public get isLoggedIn(): boolean {
+        const jwt = this.jwt;
+        
+        if (!jwt) { // Not logged in.
             return false;
         }
 
@@ -34,6 +46,7 @@ class LoginService {
     }
 
     constructor() {
+        // Safe to check in.  This is public.
         this.clientId = '585544089882-2e8mni8kmbs39kekip1k6d09q5gjmqvv.apps.googleusercontent.com';
     }
 
@@ -56,7 +69,7 @@ export function loggedIn<T extends { new (...args: any[]): any; }>(component: T)
 
         component.prototype.render = function() {
             if (!loginService.isLoggedIn) {
-                return <Navigate to="/login" replace={true} />
+                return <Navigate to="/signin" replace={true} />
             }
 
             return renderFunction();

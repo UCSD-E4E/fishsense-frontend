@@ -4,7 +4,7 @@ import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 
 import loginService from '../services/login-service';
 
-function LoginPage() {
+function SignInPage() {
   const navigate = useNavigate();
 
   if (loginService.isLoggedIn) {
@@ -28,4 +28,4 @@ function LoginPage() {
     </div>);
 }
 
-export default LoginPage;
+export default SignInPage;
