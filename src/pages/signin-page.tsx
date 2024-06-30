@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { GoogleLogin, GoogleOAuthProvider } from '@react-oauth/google';
 
+import './signin-page.scss'
 import accountService from '../services/account-service';
 
 function SignInPage() {
@@ -23,19 +24,21 @@ function SignInPage() {
   }
 
   return (
-    <div>
-      <h1>Login to FishSense</h1>
-      <GoogleOAuthProvider clientId={accountService.clientId}>
-        <GoogleLogin
-          onSuccess={credentialResponse => {
-            accountService.signin(credentialResponse);
-            navigate("/")
-          }}
-          onError={() => {
-            console.log('Login Failed');
-          }}
-        />
-      </GoogleOAuthProvider>
+    <div className="signin-container">
+      <div>
+        <h1>Login to FishSense</h1>
+        <GoogleOAuthProvider clientId={accountService.clientId}>
+          <GoogleLogin
+            onSuccess={credentialResponse => {
+              accountService.signin(credentialResponse);
+              navigate("/")
+            }}
+            onError={() => {
+              console.log('Login Failed');
+            }}
+          />
+        </GoogleOAuthProvider>
+      </div>
     </div>);
 }
 

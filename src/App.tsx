@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { RouterProvider } from 'react-router-dom';
 import { FluentProvider, useThemeClassName, webLightTheme } from '@fluentui/react-components';
 
@@ -9,7 +9,7 @@ import MainNav from './components/main-nav-component';
 function ApplyToBody() {
   const classes = useThemeClassName();
 
-  React.useEffect(() => {
+  useEffect(() => {
     const classList = classes.split(" ");
     document.body.classList.add(...classList);
 
@@ -25,9 +25,7 @@ function App() {
       <ApplyToBody />
       <MainNav />
 
-      <div className="app-container">
-        <RouterProvider router={router} />
-      </div>
+      <RouterProvider router={router} />
     </FluentProvider>);
 }
 
