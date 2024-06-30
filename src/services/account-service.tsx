@@ -25,8 +25,6 @@ class AccountService {
         }
 
         const credentialJSON = JSON.parse(credential);
-        console.log(credentialJSON);
-
         return credentialJSON;
     }
 
@@ -38,7 +36,6 @@ class AccountService {
         }
 
         const jwt = jwtDecode(credential.credential);
-        console.log(jwt);
 
         const expiration = jwt.exp || 0;
         const now = Date.now() / 1000;
@@ -79,7 +76,6 @@ class AccountService {
     }
 
     public signin(credentialResponse: CredentialResponse) {
-        console.log(credentialResponse);
         localStorage.setItem("credential", JSON.stringify(credentialResponse));
     }
 
@@ -132,7 +128,6 @@ export function authRequired(component: Function): Function {
         }, [needsSignIn]);
     
         if (needsSignIn) {
-            console.log(needsSignIn)
             return <Navigate to="/signin" replace={true} />
         }
 
