@@ -6,4 +6,5 @@ RUN npm ci
 RUN npm run build
 
 FROM nginx
-COPY --from=build /src /usr/share/nginx/html
+RUN rm -rf /usr/share/nginx/html
+COPY --from=build /src/build /usr/share/nginx/html
