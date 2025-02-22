@@ -9,54 +9,56 @@ const SignOut = bundleIcon(SignOut20Filled, SignOut20Regular);
 
 function MainNav() {
     const [isOpen, setIsOpen] = useState(false);
-    const [needsSignIn, setNeedsSignIn] = useState<boolean|undefined>(undefined);
-  
+    const [needsSignIn, setNeedsSignIn] = useState<boolean | undefined>(undefined);
+
     useEffect(() => {
-      async function getNeedsSignIn() {
-        setNeedsSignIn(!await accountService.testSignedInAsync());
-      }
-  
-      if (typeof needsSignIn === 'undefined') {
-        getNeedsSignIn(); // Intentionally not subscribing to promise.
-      }
+        async function getNeedsSignIn() {
+            const isSignedIn = await accountService.testSignedInAsync();
+            console.log("Is user signed in?", isSignedIn); // Debugging
+            setNeedsSignIn(!isSignedIn);
+        }
+
+        if (typeof needsSignIn === 'undefined') {
+            getNeedsSignIn(); 
+        }
     }, [needsSignIn]);
 
-    const renderHamburgerWithToolTip = () => {
-        return (
-            <Tooltip content="Navigation" relationship="label">
-                <Hamburger onClick={() => setIsOpen(!isOpen)} />
-            </Tooltip>
-        );
-    }
+    const toggleNav = () => {
+        setIsOpen(!isOpen);
+        console.log("Navigation toggled:", !isOpen); // Debugging
+    };
 
-    if (needsSignIn) {
-        return <div></div>;
+    if (typeof needsSignIn === 'undefined') {
+        return <div>Loading...</div>;
     }
 
     return (
         <div>
-            <NavDrawer
-                open={isOpen}
-                type="overlay"
-            >
-                <NavDrawerHeader>{renderHamburgerWithToolTip()}</NavDrawerHeader>
+            <div style={{ position: 'fixed', top: 20, left: 20, zIndex: 1000 }}>
+                <Tooltip content="Navigation" relationship="label">
+                    <Hamburger onClick={toggleNav} />
+                </Tooltip>
+            </div>
 
+            <NavDrawer open={isOpen} onOpenChange={toggleNav} type="overlay">
+                <NavDrawerHeader>
+                    <h3>Navigation</h3>
+                </NavDrawerHeader>
                 <NavDrawerBody>
                     <NavItem href="/" icon={<Dashboard />} value="1">Dashboard</NavItem>
-
                     <NavSectionHeader>Account</NavSectionHeader>
                     <NavItem href="/account" value="2">
-                        <Avatar size={20} image={{
-                            src: accountService.jwt?.picture
-                        }} /> 
+                        <Avatar size={20} image={{ src: accountService.jwt?.picture }} />
                         {accountService.jwt?.name}
                     </NavItem>
-                    <NavItem href="/signout" icon={<SignOut />} value="3">Sign Out</NavItem>
+                    <NavSectionHeader>Project</NavSectionHeader>
+                    <NavItem href="/project-introduction" value="3">Project Introduction</NavItem>
+                    <NavItem href="/upload-page" value="5">Upload</NavItem>
+                    <NavItem href="/signout" icon={<SignOut />} value="4">Sign Out</NavItem>
                 </NavDrawerBody>
             </NavDrawer>
-
-            {renderHamburgerWithToolTip()}
-        </div>);
+        </div>
+    );
 }
 
 export default MainNav;

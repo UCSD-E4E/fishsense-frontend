@@ -4,11 +4,18 @@ import AccountPage from './pages/account-page';
 import DashboardPage from './pages/dashboard-page';
 import SignInPage from './pages/signin-page';
 import SignOutPage from './pages/signout-page';
+import ProjectIntroduction from './pages/ProjectIntroduction';
+import { AuthRequired } from './services/account-service';
+import UploadPage from './pages/UploadPage';
 
 const router = createBrowserRouter([
     {
         path: "/",
-        element: <DashboardPage />
+        element: (
+            <AuthRequired>
+                <DashboardPage />
+            </AuthRequired>
+        )
     },
     {
         path: "/signin",
@@ -20,7 +27,19 @@ const router = createBrowserRouter([
     },
     {
         path: "/account",
-        element: <AccountPage />
+        element: (
+            <AuthRequired>
+                <AccountPage />
+            </AuthRequired>
+        )
+    },
+    {
+        path: "/project-introduction",
+        element: <ProjectIntroduction /> // Doesn't require authentication
+    },
+    {
+        path: "/upload-page",
+        element: <UploadPage /> // Doesn't require authentication
     },
     {
         path: "*",
@@ -28,4 +47,5 @@ const router = createBrowserRouter([
     }
 ]);
 
-export default router
+export default router;
+
