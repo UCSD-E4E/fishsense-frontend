@@ -8,6 +8,7 @@ interface GoogleJwtPayload extends JwtPayload {
     family_name: string;
     name: string;
     picture: string;
+    email: string;
 }
 
 class AccountService {
@@ -49,7 +50,7 @@ class AccountService {
 
     constructor() {
         // Safe to check in.  This is public.
-        this.clientId = '585544089882-2e8mni8kmbs39kekip1k6d09q5gjmqvv.apps.googleusercontent.com';
+        this.clientId = "931946598531-mbukvvb7g21kdifbf67g64igk036ect4.apps.googleusercontent.com";
     }
 
     public async getUserIdAsync(): Promise<string|null> {
@@ -60,7 +61,8 @@ class AccountService {
         }
 
         try {
-            const response = await fetch("http://localhost:3001/api/account", {
+            console.log("Credential: ", credential);
+            const response = await fetch(process.env.REACT_APP_BACKEND_URL + "/login/api/account", {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -68,7 +70,14 @@ class AccountService {
                 body: credential
             });
 
-            return await response.text();
+            // return await response.text();
+            const text = await response.text();
+            console.log("Backend response text:", text);
+            if (text === '{"Status":"User not found"}') {
+                return "not_existing_user";
+            }
+    
+            return text;
         }
         catch (ex) {
             return null;
@@ -82,6 +91,23 @@ class AccountService {
     public signout() {
         localStorage.removeItem("credential");
         googleLogout();
+    }
+
+    public createuser(payload: any) {
+
+        const credential = this.credentialString;
+
+        if (!credential) {
+            return null;
+        }
+
+        fetch(process.env.REACT_APP_BACKEND_URL + '/login/create-user', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+        });
     }
 
     public async testSignedInAsync(): Promise<boolean> {
@@ -106,6 +132,7 @@ class AccountService {
 }
 
 export const accountService = new AccountService()
+
 
 export function authRequired(component: Function): Function {
     const renderFunction = () => {

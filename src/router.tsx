@@ -4,6 +4,7 @@ import AccountPage from './pages/account-page';
 import DashboardPage from './pages/dashboard-page';
 import SignInPage from './pages/signin-page';
 import SignOutPage from './pages/signout-page';
+import CreateAccountPage from './pages/createuser-page';
 
 const router = createBrowserRouter([
     {
@@ -17,6 +18,10 @@ const router = createBrowserRouter([
     {
         path: "/signout",
         element: <SignOutPage />
+    },
+    {
+        path: "/create-account",
+        element: <CreateAccountPage />
     },
     {
         path: "/account",
