@@ -10,17 +10,6 @@ function SignInPage() {
   const [needsSignIn, setNeedsSignIn] = useState<boolean|undefined>(undefined);
 
   useEffect(() => {
-    accountService.testSignedInAsync().then(async (signedIn) => {
-      if (signedIn) {
-        const userId = await accountService.getUserIdAsync();
-        if (userId !== "not_existing_user") {
-          navigate("/");
-        }
-      }
-    });
-  }, [navigate]);
-
-  useEffect(() => {
     async function getNeedsSignIn() {
       setNeedsSignIn(!await accountService.testSignedInAsync());
     }
@@ -40,17 +29,16 @@ function SignInPage() {
         <h1>Login to FishSense</h1>
         <GoogleOAuthProvider clientId={accountService.clientId}>
           <GoogleLogin
-            ux_mode="popup"
-            onSuccess={async credentialResponse => {
-              accountService.signin(credentialResponse);
-              const userId = await accountService.getUserIdAsync();
-
-              if (userId === "not_existing_user") {
-                navigate("/create-account");
-              } else {
+            onSuccess={async (credentialResponse) => {
+              const res = await accountService.signin(credentialResponse);
+              if (res !== "not_existing_user") {
+                console.log("Login Success:", credentialResponse);
                 navigate("/");
               }
-              
+              else {
+                console.log("Account doesn't exist:", credentialResponse);
+                navigate("/create-account");
+              }
             }}
             onError={() => {
               console.log('Login Failed');

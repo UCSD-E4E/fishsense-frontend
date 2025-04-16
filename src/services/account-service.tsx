@@ -61,8 +61,28 @@ class AccountService {
         }
 
         try {
+            const response = await fetch(process.env.REACT_APP_BACKEND_URL + "/api/account", {
+                method: 'POST',
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: credential
+            });
+
+            return await response.text();
+        }
+        catch (ex) {
+            return null;
+        }
+    }
+
+    public async signin(credentialResponse: CredentialResponse) {
+        localStorage.setItem("credential", JSON.stringify(credentialResponse));
+        const credential = JSON.stringify(credentialResponse)
+
+        try {
             console.log("Credential: ", credential);
-            const response = await fetch(process.env.REACT_APP_BACKEND_URL + "/login/api/account", {
+            const response = await fetch(process.env.REACT_APP_BACKEND_URL + "/login/", {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -73,7 +93,7 @@ class AccountService {
             // return await response.text();
             const text = await response.text();
             console.log("Backend response text:", text);
-            if (text === '{"Status":"User not found"}') {
+            if (response.status == 404) {
                 return "not_existing_user";
             }
     
@@ -84,30 +104,38 @@ class AccountService {
         }
     }
 
-    public signin(credentialResponse: CredentialResponse) {
-        localStorage.setItem("credential", JSON.stringify(credentialResponse));
-    }
-
     public signout() {
         localStorage.removeItem("credential");
         googleLogout();
     }
 
-    public createuser(payload: any) {
+    public async createuser(payload: any): Promise<{ success: true } | { success: false; error: string }> {
 
         const credential = this.credentialString;
 
         if (!credential) {
-            return null;
+            return { success: false, error: 'Something went wrong.' };
         }
 
-        fetch(process.env.REACT_APP_BACKEND_URL + '/login/create-user', {
+        const response = await fetch(process.env.REACT_APP_BACKEND_URL + '/login/create-user', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify(payload),
         });
+
+        const res = await response.text();
+        if (response.status === 409) {
+            return { success: false, error: 'A user with this username or email already exists.' };
+        }
+    
+        if (!response.ok) {
+            return { success: false, error: res || 'Something went wrong.' };
+        }
+    
+        return { success: true };
+        
     }
 
     public async testSignedInAsync(): Promise<boolean> {

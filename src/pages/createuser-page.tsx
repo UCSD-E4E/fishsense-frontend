@@ -8,15 +8,34 @@ function CreateAccountPage() {
   const navigate = useNavigate();
   const jwt = accountService.jwt;
 
+
   const [formData, setFormData] = useState({
     firstName: '',
     lastName: '',
     username: '',
     email: jwt?.email || '',
     dob: '',
+    org_name: '',
   });
 
   const [error, setError] = useState<string | null>(null);
+  const [showHint, setShowHint] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    setToastMessage('Please fill in the required fields.');
+  }, []);
+
+    useEffect(() => {
+    if (!jwt) {
+        navigate('/signin');
+    }
+
+    setShowHint(true);
+    const timer = setTimeout(() => setShowHint(false), 5000); // auto-hide after 5 sec
+    return () => clearTimeout(timer);
+    }, [jwt, navigate]);
+
 
   useEffect(() => {
     // If user somehow reached here without signing in, redirect to sign in
@@ -34,49 +53,55 @@ function CreateAccountPage() {
     e.preventDefault();
 
     if (!formData.username) {
-      setError('Username is required.');
-      return;
+        setError('Username is required.');
+        setToastMessage('Username is required.');
+        setShowHint(true);
+        return;
     }
+
+    if (!formData.username) {
+        setError('Email is required.');
+        setToastMessage('Email is required.');
+        setShowHint(true);
+        return;
+    }
+
 
     const payload = {
-      username: formData.username,
-      email: formData.email,
-      first_name: formData.firstName || null,
-      last_name: formData.lastName || null,
-      DOB: formData.dob || null,
-      credential: accountService.credential?.credential || '',
+        username: formData.username,
+        email: formData.email,
+        first_name: formData.firstName || null,
+        last_name: formData.lastName || null,
+        DOB: formData.dob || null,
+        oauth_id: accountService.credential?.credential || '',
+        credential: accountService.credential?.credential || '',
+        organization_name: formData.org_name || null,
     };
 
-    accountService.createuser(payload);
+    const result = await accountService.createuser(payload);
 
-
-    try {
-      const response = await fetch(process.env.REACT_APP_BACKEND_URL + '/login/api/create-user', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (response.ok) {
+    if (result.success) {
         navigate('/');
-      } else {
-        const text = await response.text();
-        setError(text || 'Something went wrong creating the account.');
-      }
-    } catch (err) {
-      console.error(err);
-      setError('Network error. Try again later.');
+    } else {
+        setError(result.error || 'Unexpected error.');
+        setToastMessage(result.error || 'Unexpected error.');
+        setShowHint(true);
     }
-  };
+}
+
 
   return (
     <div className="create-account-container">
+        {showHint && (
+        <div className="toast">
+            {toastMessage}
+        </div>
+        )}
+
       <h1>Create Your Account</h1>
       <form onSubmit={handleSubmit} className="create-account-form">
         <input
-          type="text"
+          type="texta"
           name="firstName"
           placeholder="First Name (optional)"
           value={formData.firstName}
@@ -109,6 +134,13 @@ function CreateAccountPage() {
           name="dob"
           placeholder="Date of Birth (optional)"
           value={formData.dob}
+          onChange={handleChange}
+        />
+        <input
+          type="text"
+          name="org_name"
+          placeholder="Organization Name (optional)"
+          value={formData.org_name}
           onChange={handleChange}
         />
         {error && <p className="error">{error}</p>}

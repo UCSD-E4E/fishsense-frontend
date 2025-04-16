@@ -1,11 +1,32 @@
 .create-account-container {
-    max-width: 400px;
-    margin: 2rem auto;
-    padding: 2rem;
-    border-radius: 12px;
-    background: #f8f8f8;
-    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
-    text-align: center;
+    height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    position: relative;
+  
+    .toast {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background-color: #ffe8cc;
+      border: 1px solid #f0a500;
+      color: #663c00;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.9rem;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+      animation: fadeInOut 5s ease forwards;
+    }
+  
+    @keyframes fadeInOut {
+      0% { opacity: 0; transform: translateY(-10px); }
+      10% { opacity: 1; transform: translateY(0); }
+      90% { opacity: 1; }
+      100% { opacity: 0; transform: translateY(-10px); }
+    }
+  
   
     h1 {
       margin-bottom: 1.5rem;
