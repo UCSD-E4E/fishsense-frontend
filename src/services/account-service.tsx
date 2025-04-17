@@ -50,7 +50,7 @@ class AccountService {
 
     constructor() {
         // Safe to check in.  This is public.
-        this.clientId = "931946598531-mbukvvb7g21kdifbf67g64igk036ect4.apps.googleusercontent.com";
+        this.clientId = "931946598531-u2kdslb2ht5gbhrkb1t9hhre2br71c23.apps.googleusercontent.com";
     }
 
     public async getUserIdAsync(): Promise<string|null> {
@@ -79,9 +79,7 @@ class AccountService {
     public async signin(credentialResponse: CredentialResponse) {
         localStorage.setItem("credential", JSON.stringify(credentialResponse));
         const credential = JSON.stringify(credentialResponse)
-        console.log(credential)
         try {
-            console.log("Credential: ", credential);
             const response = await fetch(process.env.REACT_APP_BACKEND_URL + "/login/", {
                 method: 'POST',
                 headers: {
