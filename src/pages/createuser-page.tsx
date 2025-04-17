@@ -73,7 +73,6 @@ function CreateAccountPage() {
         first_name: formData.firstName || null,
         last_name: formData.lastName || null,
         DOB: formData.dob || null,
-        oauth_id: accountService.credential?.credential || '',
         credential: accountService.credential?.credential || '',
         organization_name: formData.org_name || null,
     };

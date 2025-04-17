@@ -61,7 +61,7 @@ class AccountService {
         }
 
         try {
-            const response = await fetch(process.env.REACT_APP_BACKEND_URL + "/api/account", {
+            const response = await fetch(process.env.REACT_APP_BACKEND_URL + "login/api/account", {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
@@ -79,7 +79,7 @@ class AccountService {
     public async signin(credentialResponse: CredentialResponse) {
         localStorage.setItem("credential", JSON.stringify(credentialResponse));
         const credential = JSON.stringify(credentialResponse)
-
+        console.log(credential)
         try {
             console.log("Credential: ", credential);
             const response = await fetch(process.env.REACT_APP_BACKEND_URL + "/login/", {
@@ -91,11 +91,14 @@ class AccountService {
             });
 
             // return await response.text();
-            const text = await response.text();
+            const text = await response.json();
             console.log("Backend response text:", text);
             if (response.status == 404) {
                 return "not_existing_user";
             }
+
+            localStorage.setItem("jwt", text["jwt"]);
+            
     
             return text;
         }
@@ -125,7 +128,7 @@ class AccountService {
             body: JSON.stringify(payload),
         });
 
-        const res = await response.text();
+        const res = await response.json();
         if (response.status === 409) {
             return { success: false, error: 'A user with this username or email already exists.' };
         }
@@ -133,6 +136,9 @@ class AccountService {
         if (!response.ok) {
             return { success: false, error: res || 'Something went wrong.' };
         }
+
+        localStorage.setItem("jwt", res["jwt"]);
+
     
         return { success: true };
         
