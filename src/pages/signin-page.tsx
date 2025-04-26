@@ -15,11 +15,13 @@ function SignInPage() {
     }
 
     if (typeof needsSignIn === 'undefined') {
+      console.log("Checking if signed in...");
       getNeedsSignIn(); // Intentionally not subscribing to promise.
     }
   }, [needsSignIn]);
 
   if (typeof needsSignIn !== 'undefined' && !needsSignIn) {
+    console.log("Already signed in, redirecting to home...");
     return <Navigate to="/" />
   }
 
@@ -32,11 +34,11 @@ function SignInPage() {
             onSuccess={async (credentialResponse) => {
               const res = await accountService.signin(credentialResponse);
               if (res !== "not_existing_user") {
-                console.log("Login Success:", credentialResponse);
+                // console.log("Login Success:", credentialResponse);
                 navigate("/");
               }
               else {
-                console.log("Account doesn't exist:", credentialResponse);
+                // console.log("Account doesn't exist:", credentialResponse);
                 navigate("/create-account");
               }
             }}

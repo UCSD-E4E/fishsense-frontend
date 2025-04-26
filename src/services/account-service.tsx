@@ -55,30 +55,36 @@ class AccountService {
 
     public async getUserIdAsync(): Promise<string|null> {
         const credential = this.credentialString;
+        // console.log("Credential:", credential);
+        console.log("getUserIdAsync")
 
         if (!credential) {
             return null;
         }
 
         try {
-            const response = await fetch(process.env.REACT_APP_BACKEND_URL + "login/api/account", {
+            const response = await fetch(process.env.REACT_APP_BACKEND_URL + "/login/api/account", {
                 method: 'POST',
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: credential
+                body: credential,
+                credentials: "include", // Add this line
             });
-
+            console.log("Response:", response);
             return await response.text();
         }
         catch (ex) {
+            console.log("Error:", ex);
             return null;
         }
     }
 
     public async signin(credentialResponse: CredentialResponse) {
         localStorage.setItem("credential", JSON.stringify(credentialResponse));
-        const credential = JSON.stringify(credentialResponse)
+        const credential = this.credentialString;
+
+        console.log("Sign in")
         try {
             const response = await fetch(process.env.REACT_APP_BACKEND_URL + "/login/", {
                 method: 'POST',
@@ -90,7 +96,7 @@ class AccountService {
 
             // return await response.text();
             const text = await response.json();
-            console.log("Backend response text:", text);
+            // console.log("Backend response text:", text);
             if (response.status == 404) {
                 return "not_existing_user";
             }
@@ -144,7 +150,7 @@ class AccountService {
 
     public async testSignedInAsync(): Promise<boolean> {
         const jwt = this.jwt;
-        
+        console.log("testSignedInAsync", jwt);
         if (!jwt) { // Not logged in.
             return false;
         }
@@ -154,6 +160,7 @@ class AccountService {
 
     public async verifyAsync() {
         const userid = await this.getUserIdAsync();
+        console.log("verifyAsync", userid);
 
         if (userid) {
             return true;
